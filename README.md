@@ -1,0 +1,2 @@
+# DynamicDataSource
+基于springboot使用的动态数据源切换，自由选择使用数据源
