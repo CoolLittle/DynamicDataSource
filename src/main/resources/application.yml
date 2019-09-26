@@ -1,0 +1,26 @@
+
+master:
+    datasource:
+      druid:
+        jdbc-url: jdbc:mysql://127.0.0.1:3306/dev?useUnicode=true&characterEncoding=utf-8&useSSL=false
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        username: root
+        password: root
+        maximum-pool-size: 20
+        pool-name: master
+        connection-timeout: 30000
+        idle-timeout: 600000
+        max-lifetime: 1765000
+slave1:
+    datasource:
+      druid:
+        # 使用阿里的Druid连接池
+        jdbc-url: jdbc:mysql://127.0.0.1:3306/dev2?useUnicode=true&characterEncoding=utf-8&useSSL=false
+        username: root
+        password: root
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        maximum-pool-size: 20
+        pool-name: slave
+        connection-timeout: 30000
+        idle-timeout: 600000
+        max-lifetime: 1765000

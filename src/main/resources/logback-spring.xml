@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径-->
+  <!--<property name="LOG_HOME" value="/data/logs" />-->
+  <!-- 彩色日志依赖的渲染类 -->
+  <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+  <conversionRule conversionWord="wex"
+                  converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
+  <conversionRule conversionWord="wEx"
+                  converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
+  <!-- 彩色日志格式 -->
+  <property name="CONSOLE_LOG_PATTERN"
+            value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(--){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+  <!-- Console 输出设置 -->
+  <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+      <!--<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>-->
+      <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+      <charset>utf8</charset>
+    </encoder>
+  </appender>
+
+  <!-- 按照每天生成INFO级别日志文件 -->
+  <appender name="appInfoLogAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <!--日志文件输出的文件名-->
+      <fileNamePattern>${LOG_HOME}/%d{yyyy-MM-dd}/info/schedule.log.%i.log</fileNamePattern>
+      <!--日志文件保留天数 -->
+      <MaxHistory>60</MaxHistory>
+      <!--日志文件最大的大小-->
+      <MaxFileSize>100MB</MaxFileSize>
+    </rollingPolicy>
+    <encoder>
+      <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+      <charset>utf8</charset>
+    </encoder>
+      <!--LevelFilter: Only accept DEBUG level logs, if not deny-->
+      <filter class="ch.qos.logback.classic.filter.LevelFilter">
+          <level>INFO</level>
+      </filter>
+  </appender>
+    <!-- 按照每天生成DEBUG级别日志文件 -->
+  <appender name="appDebugLogAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <!--日志文件输出的文件名-->
+      <fileNamePattern>${LOG_HOME}/%d{yyyy-MM-dd}/debug/schedule.log.%i.log</fileNamePattern>
+      <!--日志文件保留天数 -->
+      <MaxHistory>60</MaxHistory>
+      <!--日志文件最大的大小-->
+      <MaxFileSize>100MB</MaxFileSize>
+    </rollingPolicy>
+    <encoder>
+      <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+      <charset>utf8</charset>
+    </encoder>
+      <!--LevelFilter: Only accept DEBUG level logs, if not deny-->
+      <filter class="ch.qos.logback.classic.filter.LevelFilter">
+          <level>DEBUG</level>
+          <onMatch>ACCEPT</onMatch>
+          <onMismatch>DENY</onMismatch>
+      </filter>
+  </appender>
+    <!-- 按照每天生成ERROR级别日志文件 -->
+  <appender name="appErrorLogAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <!--日志文件输出的文件名-->
+      <fileNamePattern>${LOG_HOME}/%d{yyyy-MM-dd}/error/schedule.log.%i.log</fileNamePattern>
+      <!--日志文件保留天数 -->
+      <MaxHistory>60</MaxHistory>
+      <!--日志文件最大的大小-->
+      <MaxFileSize>100MB</MaxFileSize>
+    </rollingPolicy>
+    <encoder>
+      <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+      <charset>utf8</charset>
+    </encoder>
+      <!--LevelFilter: Only accept DEBUG level logs, if not deny-->
+      <filter class="ch.qos.logback.classic.filter.LevelFilter">
+          <level>ERROR</level>
+          <onMatch>ACCEPT</onMatch>
+          <onMismatch>DENY</onMismatch>
+      </filter>
+  </appender>
+  <appender name="druidFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy" >
+      <!--日志文件输出的文件名 -->
+      <FileNamePattern>${LOG_HOME}/druid.log.%d{yyyy-MM-dd}.%i.log
+      </FileNamePattern>
+      <!--日志文件保留天数 -->
+      <MaxHistory>30</MaxHistory>
+      <MaxFileSize>100MB</MaxFileSize>
+    </rollingPolicy>
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符 -->
+      <pattern>
+        %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+      </pattern>
+      <charset>utf8</charset>
+    </encoder>
+      <!--LevelFilter: Only accept DEBUG level logs, if not deny-->
+      <filter class="ch.qos.logback.classic.filter.LevelFilter">
+          <level>ERROR,WARN</level>
+          <onMatch>ACCEPT</onMatch>
+          <onMismatch>DENY</onMismatch>
+      </filter>
+  </appender>
+
+    <root level="DEBUG"> <!-- 此时debug级别的信息会被过滤 -->
+        <appender-ref ref="console" />
+    </root>
+    <!-- 日志logger(包.类)的输出级别 -->
+    <logger name="org.springframework" level="DEBUG" />
+    <logger name="druidFile" level="DEBUG"/>
+    <logger name="com.dynamic.datasource" level="DEBUG">
+        <appender-ref ref="appInfoLogAppender" />
+        <appender-ref ref="appErrorLogAppender" />
+    </logger>
+
+</configuration>
