@@ -3,6 +3,7 @@ package com.dynamic.datasource.aop;
 import com.dynamic.datasource.config.DynamicDataSourceHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -23,6 +24,7 @@ public class DataSourceAop {
 	 * 不是Master注解的对象或方法  && select开头的方法  ||  get开头的方法
 	 */
 	@Pointcut("!@annotation(com.dynamic.datasource.annotation.Master) "       +
+			 " && !@annotation(org.springframework.transaction.annotation.Transactional) " +
 			 " && ( @annotation(com.dynamic.datasource.annotation.Slave) " +
 			 " || execution(* com.dynamic.datasource.modular.service..*.select*(..))" +
 			 " || execution(* com.dynamic.datasource.modular.service..*.get*(..))"   +
@@ -43,6 +45,7 @@ public class DataSourceAop {
 	 */
 	@Pointcut("!@annotation(com.dynamic.datasource.annotation.Slave) "       +
 			"&& (@annotation(com.dynamic.datasource.annotation.Master) " +
+			"|| @annotation(org.springframework.transaction.annotation.Transactional)  " +
 			"|| execution(* com.dynamic.datasource.modular.service..*.gen*(..)) " +
 			"|| execution(* com.dynamic.datasource.modular.service..*.refund*(..)) " +
 			"|| execution(* com.dynamic.datasource.modular.service..*.clean*(..)) " +
@@ -82,6 +85,18 @@ public class DataSourceAop {
 		log.debug("主库：{}",joinPoint.getSignature().getDeclaringTypeName()+ "." + joinPoint.getSignature().getName()+"()");
 
 		DynamicDataSourceHolder.master();
+	}
+
+	/**
+	 * 修复ThreadLocal未清空导致诡异事情--写操作会写到主库
+	 */
+	@AfterReturning("readPointcut()")
+	public void readAfterReturning(){
+		DynamicDataSourceHolder.clear();
+	}
+	@AfterReturning("writePointcut()")
+	public void writeAfterReturning(){
+		DynamicDataSourceHolder.clear();
 	}
 
 }

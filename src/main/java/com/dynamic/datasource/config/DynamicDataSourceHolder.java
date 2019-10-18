@@ -60,7 +60,9 @@ public class DynamicDataSourceHolder {
 			log.debug("切换到master");
 		}
 	}
-
+	public static void clear() {
+		contextHolder.remove();
+	}
 	/**
 	 * 切换到从库，从库轮询访问
 	 */
